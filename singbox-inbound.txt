@@ -1,0 +1,15 @@
+{
+    "inbounds": [
+        {
+            "address": [
+                "172.19.100.1/24"
+            ],
+            "auto_redirect": false,
+            "auto_route": false,
+            "interface_name": "tun0",
+            "mtu": 1500,
+            "tag": "tun-in-custom",
+            "type": "tun"
+        }
+    ]
+}

@@ -1,0 +1,27 @@
+#!/usr/bin/nft -f
+# vim:set ts=2 sw=2 et:
+
+destroy table inet filter
+table inet filter {
+  chain input {
+    type filter hook input priority filter;
+    policy drop;
+
+    ct state invalid drop comment "early drop of invalid connections";
+    ct state {established, related} accept comment "allow tracked connections";
+    iif lo accept comment "allow from loopback";
+    # ICMPv6//For IPv6 Router Advertisement
+    meta l4proto { icmp, icmpv6 } accept comment "allow icmp";
+
+    # singbox allow input
+    iifname tun0 accept;
+  }
+  chain forward {
+    type filter hook forward priority filter
+    policy drop;
+
+    # ielxm/to-tun
+    iifname "veth-host" oifname "tun0" accept;
+    iifname "tun0" oifname "veth-host" ct state established,related accept
+  }
+}
