@@ -1,0 +1,10 @@
+# All credits goes to ielxm
+# LICENSE: MIT
+
+[Unit]
+Description=Start ielxm/to-tun's T slice
+Requires=T.slice
+After=T.slice
+
+[Install]
+WantedBy=default.target

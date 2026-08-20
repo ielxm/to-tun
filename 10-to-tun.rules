@@ -1,5 +1,0 @@
-# All credits goes to ielxm
-# LICENSE: MIT
-#
-# /etc/udev/rules.d/10-to-tun.rules
-ACTION=="add", SUBSYSTEM=="net", KERNEL=="tun0", RUN+="/bin/ip route add default via 172.19.100.1 dev tun0 table 100"

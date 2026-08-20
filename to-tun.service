@@ -1,0 +1,16 @@
+# All credits goes to ielxm
+# LICENSE: MIT
+
+[Unit]
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+User=root
+ExecStart=/usr/local/bin/to-tun setup
+Restart=always
+RestartSec=1
+Type=simple
+
+[Install]
+WantedBy=multi-user.target

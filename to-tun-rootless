@@ -1,0 +1,27 @@
+#!/bin/bash
+USER_UID="$(/bin/id -u)"
+USER_GID="$(/bin/id -g)"
+SHELL_OF_CHOICE="/bin/bash"
+TUN_IFNAME="tun0"
+TUN_GATEWAY="172.19.100.1" # gateway ip without mask
+
+PID_FILE="/run/user/1000/to-tun.pid"
+LOG_FILE="/tmp/$USER_UID-to-tun-pasta.log"
+
+if [ ! -f "$PID_FILE" ]; then
+    
+    /bin/unshare --net --user --setgroups deny \
+        --map-users=$USER_UID:$USER_UID:1 \
+        --map-groups=$USER_GID:$USER_GID:1 \
+        /bin/sleep infinity & disown
+
+    PID=$!
+
+    /bin/echo "$PID" > "$PID_FILE"
+    
+    /bin/pasta --log-file "$LOG_FILE" --foreground --gateway $TUN_GATEWAY --outbound-if4 $TUN_IFNAME --ipv4-only --host-lo-to-ns-lo --config-net $PID & disown
+    /bin/sleep 1.0
+fi
+
+/bin/echo $(cat $PID_FILE)
+/bin/nsenter -t $(cat $PID_FILE) -U --net --keep-caps
